@@ -23,7 +23,7 @@
         <!-- this has to be manually updated, when a new jpro version is released -->
         <!-- quarkus ignores profile, on jpro.release? I cant take this magic anymore -->
         <javafxjpro.version>21.0.3-jpro</javafxjpro.version>
-        <javafx.version>${javafxdesktop.version}</javafx.version>
+        <javafx.version>${javafxjpro.version}</javafx.version>
     </properties>
 
     <pluginRepositories>
