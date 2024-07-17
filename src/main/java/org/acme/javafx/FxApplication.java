@@ -10,6 +10,7 @@ public class FxApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        System.out.println(" ClassLoader of FxApplication: " + FxApplication.class.getClassLoader());
         CDI.current()
             .getBeanManager()
             .getEvent()

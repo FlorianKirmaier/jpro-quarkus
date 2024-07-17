@@ -5,20 +5,40 @@
     <artifactId>quarkus-javafx-example</artifactId>
     <version>1.0</version>
     <properties>
+        <jpro.version>2024.3.1-QUARKUS</jpro.version>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.6.5</quarkus.platform.version>
-        <quarkus-plugin.version>3.6.5</quarkus-plugin.version>
+        <quarkus.platform.version>3.12.2</quarkus.platform.version>
+        <quarkus-plugin.version>3.12.2</quarkus-plugin.version>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.22</lombok.version>
-        <javafx.version>17.0.9</javafx.version>
+        <javafxdesktop.version>17.0.9</javafxdesktop.version>
+
+        <!-- this has to be manually updated, when a new jpro version is released -->
+        <!-- quarkus ignores profile, on jpro.release? I cant take this magic anymore -->
+        <javafxjpro.version>21.0.3-jpro</javafxjpro.version>
+        <javafx.version>${javafxdesktop.version}</javafx.version>
     </properties>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jpro - sandec repository</id>
+            <url>https://sandec.jfrog.io/artifactory/repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>jpro - sandec repository</id>
+            <url>https://sandec.jfrog.io/artifactory/repo</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -40,6 +60,16 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
@@ -52,18 +82,63 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.sandec.jpro</groupId>
+            <artifactId>jpro-webapi</artifactId>
+            <version>${jpro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sandec.jpro</groupId>
+            <artifactId>jpro-boot</artifactId>
+            <version>${jpro.version}</version>
+        </dependency>
 
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>jpro</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafxjpro.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-media</artifactId>
+                    <version>${javafxjpro.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafxjpro.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
 
         <plugins>
+
+            <plugin>
+                <groupId>one.jpro</groupId>
+                <artifactId>jpro-maven-plugin</artifactId>
+                <version>${jpro.version}</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <bootMain>org.acme.javafx.CDIApplication</bootMain>
+                    <mainClassName>org.acme.javafx.FxApplication</mainClassName>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.3</version>
                 <configuration>
-                    <mainClass>HelloFX</mainClass>
+                    <mainClass>org.acme.javafx.CDIApplication</mainClass>
                 </configuration>
             </plugin>
             <plugin>
